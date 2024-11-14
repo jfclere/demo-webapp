@@ -26,8 +26,6 @@ class testdemowebapp:
           self.JSESSIONID = c.value
         else:
           if self.JSESSIONID != c.value:
-            print(c.value)
-            print(self.JSESSIONID)
             return False
     return True
 
@@ -40,7 +38,6 @@ class testdemowebapp:
         return True
       else:
         continue
-    print("NOT OK!!!")  
     return False
 
   def start(result_queue, n, tid):
@@ -55,12 +52,11 @@ if __name__ == "__main__":
     count = int(args[0])
   if len(args) == 2:
     loop = int(args[1])
-  print(count)
 
   q = queue.Queue()
   tarr = [] 
   for i in range(count):
-    t = Thread(target=testdemowebapp.start, args=(q, loop, i))
+    t = Thread(target=testdemowebapp.start, args=(q, loop, i), daemon=True)
     tarr.append(t)
   for i in range(count):
     tarr[i].start()
@@ -68,6 +64,5 @@ if __name__ == "__main__":
   for i in range(count):
     r = q.get()
     if r[1] != 'done':
-      print(r)
       print("Failed")
       break
