@@ -13,16 +13,16 @@ class testdemowebapp:
     self.JSESSIONID = None
 
   # Return False if sticky True otherwise
-  def request_reponse(self):
+  def request_response(self):
     headers = {'user-agent': 'test-demo-webapp'}
-    if self.JSESSIONID != None:
+    if self.JSESSIONID is not None:
       cookies = {'JSESSIONID': self.JSESSIONID}
       r = requests.get(self.url, headers=headers, cookies=cookies)
     else:
       r = requests.get(self.url, headers=headers)
     for c in r.cookies:
       if c.name == "JSESSIONID":
-        if self.JSESSIONID == None:
+        if self.JSESSIONID is None:
           self.JSESSIONID = c.value
         else:
           if self.JSESSIONID != c.value:
@@ -32,9 +32,9 @@ class testdemowebapp:
     return True
 
   # Return False if sticky True otherwise
-  def request_reponse_loop(self, n):
+  def request_response_loop(self, n):
     i = 0
-    while self.request_reponse():
+    while self.request_response():
       i = i + 1
       if i == n:
         return True
@@ -45,21 +45,15 @@ class testdemowebapp:
 
   def start(result_queue, n, tid):
     mydemo = testdemowebapp()
-    if mydemo.request_reponse_loop(n):
-      result_queue.put((tid, 'done'))
-    else:
-      result_queue.put((tid, 'failed'))
-    
-    
+    result_queue.put((tid, 'done' if mydemo.request_response_loop(n) else 'failed'))
 
 if __name__ == "__main__":
   args = sys.argv[1:]
   count = 1
   loop = 1000
-  if len(args) == 1:
-    count = args[0]
+  if len(args) >= 1:
+    count = int(args[0])
   if len(args) == 2:
-    count = args[0]
     loop = int(args[1])
   print(count)
 
@@ -68,10 +62,10 @@ if __name__ == "__main__":
   for i in range(int(count)):
     t = Thread(target=testdemowebapp.start, args=(q, loop, i))
     tarr.append(t)
-  for i in range(int(count)):
+  for i in range(count):
     tarr[i].start()
 
-  for i in range(int(count)):
+  for i in range(count):
     r = q.get()
     if r[1] != 'done':
       print(r)
