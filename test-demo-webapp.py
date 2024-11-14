@@ -59,7 +59,7 @@ if __name__ == "__main__":
 
   q = queue.Queue()
   tarr = [] 
-  for i in range(int(count)):
+  for i in range(count):
     t = Thread(target=testdemowebapp.start, args=(q, loop, i))
     tarr.append(t)
   for i in range(count):
