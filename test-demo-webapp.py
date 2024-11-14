@@ -24,9 +24,8 @@ class testdemowebapp:
       if c.name == "JSESSIONID":
         if self.JSESSIONID is None:
           self.JSESSIONID = c.value
-        else:
-          if self.JSESSIONID != c.value:
-            return False
+        elif self.JSESSIONID != c.value:
+          return False
     return True
 
   # Return False if sticky True otherwise
@@ -36,8 +35,6 @@ class testdemowebapp:
       i = i + 1
       if i == n:
         return True
-      else:
-        continue
     return False
 
   def start(result_queue, n, tid):
